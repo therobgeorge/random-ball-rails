@@ -6,6 +6,7 @@ class PlayerController < ApplicationController
     team = HTTP.get("https://api.sportsdata.io/v3/nba/scores/json/teams?key=#{Rails.application.credentials.api_key}").parse(:json).select{|team| team["Key"] == "#{player["Team"]}"}
     baller = {}
     baller["name"] = player["YahooName"]
+    baller["photo"] = player["PhotoUrl"]
     baller["college"] = player["College"]
     baller["team_city"] = team[0]["City"]
     baller["team_name"] = team[0]["Name"]

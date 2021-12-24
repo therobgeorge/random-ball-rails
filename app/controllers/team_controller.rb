@@ -9,6 +9,7 @@ class TeamController < ApplicationController
     end
     
     squad = {}
+    squad["logo"] = team["WikipediaLogoUrl"]
     squad["players"] = players
     squad["stadium"] = stadium[0]["Name"]
 
