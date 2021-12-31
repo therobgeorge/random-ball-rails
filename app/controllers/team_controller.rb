@@ -1,4 +1,5 @@
 class TeamController < ApplicationController
+
   def show
     team = HTTP.get("https://api.sportsdata.io/v3/nba/scores/json/teams?key=#{Rails.application.credentials.api_key}").parse(:json).sample
     players_call = HTTP.get("https://api.sportsdata.io/v3/nba/stats/json/Players/#{team["Key"]}?key=#{Rails.application.credentials.api_key}").parse(:json)

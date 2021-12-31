@@ -1,9 +1,8 @@
 class PlayerController < ApplicationController
-  require "http"
 
   def show
-    player = HTTP.get("https://api.sportsdata.io/v3/nba/scores/json/Players?key=#{Rails.application.credentials.api_key}").parse(:json).sample
-    team = HTTP.get("https://api.sportsdata.io/v3/nba/scores/json/teams?key=#{Rails.application.credentials.api_key}").parse(:json).select{|team| team["Key"] == "#{player["Team"]}"}
+    player = fetch_player.sample
+    team = fetch_teams.select{|team| team["Key"] == "#{player["Team"]}"}
     baller = {}
     baller["name"] = player["YahooName"]
     baller["photo"] = player["PhotoUrl"]
@@ -15,4 +14,17 @@ class PlayerController < ApplicationController
 
     render json: baller
   end
+
+  def fetch_teams
+    Rails.cache.fetch(:teams, expires_in: 1.day) do
+      HTTP.get("https://api.sportsdata.io/v3/nba/scores/json/teams?key=#{Rails.application.credentials.api_key}").parse(:json)
+    end
+  end
+
+  def fetch_player
+    Rails.cache.fetch(:players, expires_in: 1.day) do
+      HTTP.get("https://api.sportsdata.io/v3/nba/scores/json/Players?key=#{Rails.application.credentials.api_key}").parse(:json)
+    end
+  end
+
 end
